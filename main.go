@@ -14,8 +14,8 @@ const (
 )
 
 func getEnvOrDefault(key string) string {
-	value = os.Getenv(key)
-	if len(key) == 0 {
+	value := os.Getenv(key)
+	if len(value) == 0 {
 		return errMsg
 	}
 	return value
