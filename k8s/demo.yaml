@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: env-sample-secret
+  labels:
+    app: demo-app
+type: Opaque
+data:
+  username: c2FtcGxlLXVzZXIK
+  password: c2FtcGxlLXBhc3N3b3JkCg==
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: demo-app
+      annotations:
+        reloaded-at: "20180919173723"
+    spec:
+      containers:
+      - name: demo-app
+        image: pddg/echo-env-sample:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: SAMPLE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: env-sample-secret
+              key: username
+              optional: true
+        - name: SAMPLE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-sample-secret
+              key: password
+              optional: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  selector:
+    app: demo-app
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: demo-app
+  type: LoadBalancer
