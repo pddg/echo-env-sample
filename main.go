@@ -13,16 +13,18 @@ const (
 	errMsg = "<font color='red'>Not Found</font>"
 )
 
+func getEnvOrDefault(key string) string {
+	value = os.Getenv(key)
+	if len(key) == 0 {
+		return errMsg
+	}
+	return value
+}
+
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		username := os.Getenv("SAMPLE_USERNAME")
-		if len(username) == 0 {
-			username = errMsg
-		}
-		password := os.Getenv("SAMPLE_PASSWORD")
-		if len(password) == 0 {
-			password = errMsg
-		}
+		username := getEnvOrDefault("SAMPLE_USERNAME")
+		password := getEnvOrDefault("SAMPLE_PASSWORD")
 		fmt.Fprintf(w, template, username, password)
 	})
 	http.ListenAndServe("0.0.0.0:8000", nil)
